@@ -6,6 +6,8 @@ import { useStores } from "../models"
 import { AppStackScreenProps } from "../navigators"
 import { colors, spacing } from "../theme"
 
+// test
+
 import { useIdTokenAuthRequest as useGoogleIdTokenAuthRequest } from "expo-auth-session/providers/google"
 
 import { expoClientId, iosClientId, androidClientId } from "app/config/firebaseConfig"
