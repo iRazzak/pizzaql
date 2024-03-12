@@ -1,5 +1,16 @@
 import { ExpoConfig, ConfigContext } from "@expo/config"
+import { config } from 'dotenv';
+import path from 'path';
 
+const envFile = path.join(__dirname, '.env');
+const env = config({
+  path: envFile,
+});
+
+if (env.error) {
+  console.log('ENV FILE ERROR: ', envFile);
+  throw env.error;
+}
 /**
  * Use ts-node here so we can use TypeScript for our Config Plugins
  * and not have to compile them to JavaScript
@@ -17,6 +28,20 @@ module.exports = ({ config }: ConfigContext): Partial<ExpoConfig> => {
 
   return {
     ...config,
+    android: {
+      intentFilters: [
+        {
+          action: 'VIEW',
+          category: ['BROWSABLE', 'DEFAULT'],
+        },
+      ],
+    },
+    web: {
+      favicon: './assets/favicon.webp',
+    },
+    extra: {
+      ...env.parsed,
+    },
     plugins: [
       ...existingPlugins,
       require("./plugins/withSplashScreen").withSplashScreen,

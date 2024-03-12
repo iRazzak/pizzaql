@@ -6,6 +6,10 @@ import { useStores } from "../models"
 import { AppStackScreenProps } from "../navigators"
 import { colors, spacing } from "../theme"
 
+import { useIdTokenAuthRequest as useGoogleIdTokenAuthRequest } from "expo-auth-session/providers/google"
+
+import { expoClientId, iosClientId, androidClientId } from "app/config/firebaseConfig"
+
 interface LoginScreenProps extends AppStackScreenProps<"Login"> {}
 
 export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_props) {
@@ -18,6 +22,17 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
   const {
     authenticationStore: { authEmail, setAuthEmail, setAuthToken, validationError },
   } = useStores()
+
+  const [, googleResponse, promptAsyncGoogle] = useGoogleIdTokenAuthRequest({
+    selectAccount: true,
+    expoClientId,
+    iosClientId,
+    androidClientId,
+  })
+
+  const handleLoginGoogle = async () => {
+    await promptAsyncGoogle()
+  }
 
   useEffect(() => {
     // Here is where you could fetch credentials from keychain or storage
@@ -112,6 +127,14 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
         style={$tapButton}
         preset="reversed"
         onPress={login}
+      />
+
+      <Button
+        testID="login-button"
+        tx="loginScreen.tapToSignIn"
+        style={$tapButton}
+        preset="reversed"
+        onPress={handleLoginGoogle}
       />
     </Screen>
   )
